@@ -157,7 +157,7 @@
                 </Grid.ColumnDefinitions>
                 <StackPanel>
                     <TextBlock Text="TypeSimulator" FontSize="24" FontWeight="Bold" Foreground="White"/>
-                    <TextBlock Text="V8 · 人类输入回放增强版" Margin="0,4,0,0" Foreground="#E7F2FF" FontSize="13"/>
+                    <TextBlock Text="V9 · 人类输入回放增强版" Margin="0,4,0,0" Foreground="#E7F2FF" FontSize="13"/>
                 </StackPanel>
                 <Border Grid.Column="1" Background="#2AFFFFFF" BorderBrush="#4FFFFFFF" BorderThickness="1" CornerRadius="10" Padding="10,4" VerticalAlignment="Center">
                     <TextBlock Text="Realistic Typing Replay" Foreground="#ECF6FF" FontSize="12" FontWeight="SemiBold"/>
@@ -266,6 +266,8 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
@@ -291,101 +293,119 @@
                                   Checked="RandomDelayCheckBox_Changed"
                                   Unchecked="RandomDelayCheckBox_Changed"/>
 
-                        <TextBlock Grid.Row="2" Grid.Column="0" Text="错字模拟:" VerticalAlignment="Center" Margin="0,10,8,0"/>
-                        <CheckBox Grid.Row="2" Grid.Column="1" x:Name="TypoSimulationCheckBox"
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="标点发呆停顿:" VerticalAlignment="Center" Margin="0,10,8,0"/>
+                        <CheckBox Grid.Row="2" Grid.Column="1" x:Name="PunctuationDazePauseCheckBox"
+                                  Content="句号/逗号后额外随机停顿"
+                                  Margin="0,10,0,0"
+                                  Checked="PunctuationDazePauseCheckBox_Changed"
+                                  Unchecked="PunctuationDazePauseCheckBox_Changed"/>
+
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="停顿时长:" VerticalAlignment="Center" Margin="0,10,8,0"/>
+                        <Slider Grid.Row="3" Grid.Column="1" x:Name="PunctuationDazeDelaySlider"
+                                Minimum="100"
+                                Maximum="3000"
+                                Value="900"
+                                TickFrequency="100"
+                                IsSnapToTickEnabled="True"
+                                ValueChanged="PunctuationDazeDelaySlider_ValueChanged"/>
+                        <TextBlock Grid.Row="3" Grid.Column="2" x:Name="PunctuationDazeDelayValueText"
+                                   Text="900 ms" Width="74" TextAlignment="Right" Margin="0,10,0,0" VerticalAlignment="Center"/>
+
+                        <TextBlock Grid.Row="4" Grid.Column="0" Text="错字模拟:" VerticalAlignment="Center" Margin="0,10,8,0"/>
+                        <CheckBox Grid.Row="4" Grid.Column="1" x:Name="TypoSimulationCheckBox"
                                   Content="模拟打错字后退格重打"
                                   Margin="0,10,0,0"
                                   Checked="TypoSimulationCheckBox_Changed"
                                   Unchecked="TypoSimulationCheckBox_Changed"/>
 
-                        <TextBlock Grid.Row="3" Grid.Column="0" Text="错字概率:" VerticalAlignment="Center" Margin="0,10,8,0"/>
-                        <Slider Grid.Row="3" Grid.Column="1" x:Name="TypoChanceSlider"
+                        <TextBlock Grid.Row="5" Grid.Column="0" Text="错字概率:" VerticalAlignment="Center" Margin="0,10,8,0"/>
+                        <Slider Grid.Row="5" Grid.Column="1" x:Name="TypoChanceSlider"
                                 Minimum="1"
                                 Maximum="90"
                                 Value="3"
                                 TickFrequency="1"
                                 IsSnapToTickEnabled="True"
                                 ValueChanged="TypoChanceSlider_ValueChanged"/>
-                        <TextBlock Grid.Row="3" Grid.Column="2" x:Name="TypoChanceValueText"
+                        <TextBlock Grid.Row="5" Grid.Column="2" x:Name="TypoChanceValueText"
                                    Text="3%" Width="74" TextAlignment="Right" Margin="0,10,0,0" VerticalAlignment="Center"/>
 
-                        <TextBlock Grid.Row="4" Grid.Column="0" Text="双击概率:" VerticalAlignment="Center" Margin="0,10,8,0"/>
-                        <Slider Grid.Row="4" Grid.Column="1" x:Name="DoubleHitChanceSlider"
+                        <TextBlock Grid.Row="6" Grid.Column="0" Text="双击概率:" VerticalAlignment="Center" Margin="0,10,8,0"/>
+                        <Slider Grid.Row="6" Grid.Column="1" x:Name="DoubleHitChanceSlider"
                                 Minimum="0"
                                 Maximum="30"
                                 Value="4"
                                 TickFrequency="1"
                                 IsSnapToTickEnabled="True"
                                 ValueChanged="DoubleHitChanceSlider_ValueChanged"/>
-                        <TextBlock Grid.Row="4" Grid.Column="2" x:Name="DoubleHitChanceValueText"
+                        <TextBlock Grid.Row="6" Grid.Column="2" x:Name="DoubleHitChanceValueText"
                                    Text="4%" Width="74" TextAlignment="Right" Margin="0,10,0,0" VerticalAlignment="Center"/>
 
-                        <TextBlock Grid.Row="5" Grid.Column="0" Text="整词删改概率:" VerticalAlignment="Center" Margin="0,10,8,0"/>
-                        <Slider Grid.Row="5" Grid.Column="1" x:Name="WholeWordRewriteChanceSlider"
+                        <TextBlock Grid.Row="7" Grid.Column="0" Text="整词删改概率:" VerticalAlignment="Center" Margin="0,10,8,0"/>
+                        <Slider Grid.Row="7" Grid.Column="1" x:Name="WholeWordRewriteChanceSlider"
                                 Minimum="0"
                                 Maximum="30"
                                 Value="5"
                                 TickFrequency="1"
                                 IsSnapToTickEnabled="True"
                                 ValueChanged="WholeWordRewriteChanceSlider_ValueChanged"/>
-                        <TextBlock Grid.Row="5" Grid.Column="2" x:Name="WholeWordRewriteChanceValueText"
+                        <TextBlock Grid.Row="7" Grid.Column="2" x:Name="WholeWordRewriteChanceValueText"
                                    Text="5%" Width="74" TextAlignment="Right" Margin="0,10,0,0" VerticalAlignment="Center"/>
 
-                        <TextBlock Grid.Row="6" Grid.Column="0" Text="错字后停顿:" VerticalAlignment="Center" Margin="0,10,8,0"/>
-                        <CheckBox Grid.Row="6" Grid.Column="1" x:Name="TypoExtraPauseCheckBox"
+                        <TextBlock Grid.Row="8" Grid.Column="0" Text="错字后停顿:" VerticalAlignment="Center" Margin="0,10,8,0"/>
+                        <CheckBox Grid.Row="8" Grid.Column="1" x:Name="TypoExtraPauseCheckBox"
                                   Content="启用错字后额外 0.5~1 秒犹豫停顿"
                                   Margin="0,10,0,0"
                                   Checked="TypoExtraPauseCheckBox_Changed"
                                   Unchecked="TypoExtraPauseCheckBox_Changed"/>
 
-                        <TextBlock Grid.Row="7" Grid.Column="0" Text="停顿触发概率:" VerticalAlignment="Center" Margin="0,10,8,0"/>
-                        <Slider Grid.Row="7" Grid.Column="1" x:Name="TypoExtraPauseChanceSlider"
+                        <TextBlock Grid.Row="9" Grid.Column="0" Text="停顿触发概率:" VerticalAlignment="Center" Margin="0,10,8,0"/>
+                        <Slider Grid.Row="9" Grid.Column="1" x:Name="TypoExtraPauseChanceSlider"
                                 Minimum="0"
                                 Maximum="100"
                                 Value="100"
                                 TickFrequency="5"
                                 IsSnapToTickEnabled="True"
                                 ValueChanged="TypoExtraPauseChanceSlider_ValueChanged"/>
-                        <TextBlock Grid.Row="7" Grid.Column="2" x:Name="TypoExtraPauseChanceValueText"
+                        <TextBlock Grid.Row="9" Grid.Column="2" x:Name="TypoExtraPauseChanceValueText"
                                    Text="100%" Width="74" TextAlignment="Right" Margin="0,10,0,0" VerticalAlignment="Center"/>
 
-                        <TextBlock Grid.Row="8" Grid.Column="0" Text="节奏曲线:" VerticalAlignment="Center" Margin="0,10,8,0"/>
-                        <CheckBox Grid.Row="8" Grid.Column="1" x:Name="PacingCurveCheckBox"
+                        <TextBlock Grid.Row="10" Grid.Column="0" Text="节奏曲线:" VerticalAlignment="Center" Margin="0,10,8,0"/>
+                        <CheckBox Grid.Row="10" Grid.Column="1" x:Name="PacingCurveCheckBox"
                                   Content="启用开头慢-中段快-结尾慢"
                                   Margin="0,10,0,0"
                                   Checked="PacingCurveCheckBox_Changed"
                                   Unchecked="PacingCurveCheckBox_Changed"/>
 
-                        <TextBlock Grid.Row="9" Grid.Column="0" Text="节奏强度:" VerticalAlignment="Center" Margin="0,10,8,0"/>
-                        <Slider Grid.Row="9" Grid.Column="1" x:Name="PacingCurveStrengthSlider"
+                        <TextBlock Grid.Row="11" Grid.Column="0" Text="节奏强度:" VerticalAlignment="Center" Margin="0,10,8,0"/>
+                        <Slider Grid.Row="11" Grid.Column="1" x:Name="PacingCurveStrengthSlider"
                                 Minimum="10"
                                 Maximum="200"
                                 Value="100"
                                 TickFrequency="10"
                                 IsSnapToTickEnabled="True"
                                 ValueChanged="PacingCurveStrengthSlider_ValueChanged"/>
-                        <TextBlock Grid.Row="9" Grid.Column="2" x:Name="PacingCurveStrengthValueText"
+                        <TextBlock Grid.Row="11" Grid.Column="2" x:Name="PacingCurveStrengthValueText"
                                    Text="100%" Width="74" TextAlignment="Right" Margin="0,10,0,0" VerticalAlignment="Center"/>
 
-                        <TextBlock Grid.Row="10" Grid.Column="0" Text="疲劳曲线:" VerticalAlignment="Center" Margin="0,10,8,0"/>
-                        <CheckBox Grid.Row="10" Grid.Column="1" x:Name="FatigueCurveCheckBox"
+                        <TextBlock Grid.Row="12" Grid.Column="0" Text="疲劳曲线:" VerticalAlignment="Center" Margin="0,10,8,0"/>
+                        <CheckBox Grid.Row="12" Grid.Column="1" x:Name="FatigueCurveCheckBox"
                                   Content="启用越打越疲劳的节奏变化"
                                   Margin="0,10,0,0"
                                   Checked="FatigueCurveCheckBox_Changed"
                                   Unchecked="FatigueCurveCheckBox_Changed"/>
 
-                        <TextBlock Grid.Row="11" Grid.Column="0" Text="疲劳强度:" VerticalAlignment="Center" Margin="0,10,8,0"/>
-                        <Slider Grid.Row="11" Grid.Column="1" x:Name="FatigueCurveStrengthSlider"
+                        <TextBlock Grid.Row="13" Grid.Column="0" Text="疲劳强度:" VerticalAlignment="Center" Margin="0,10,8,0"/>
+                        <Slider Grid.Row="13" Grid.Column="1" x:Name="FatigueCurveStrengthSlider"
                                 Minimum="10"
                                 Maximum="200"
                                 Value="100"
                                 TickFrequency="10"
                                 IsSnapToTickEnabled="True"
                                 ValueChanged="FatigueCurveStrengthSlider_ValueChanged"/>
-                        <TextBlock Grid.Row="11" Grid.Column="2" x:Name="FatigueCurveStrengthValueText"
+                        <TextBlock Grid.Row="13" Grid.Column="2" x:Name="FatigueCurveStrengthValueText"
                                    Text="100%" Width="74" TextAlignment="Right" Margin="0,10,0,0" VerticalAlignment="Center"/>
 
-                        <StackPanel Grid.Row="12" Grid.Column="0" Grid.ColumnSpan="3" Orientation="Horizontal" Margin="0,12,0,0">
+                        <StackPanel Grid.Row="14" Grid.Column="0" Grid.ColumnSpan="3" Orientation="Horizontal" Margin="0,12,0,0">
                             <Button x:Name="StartTypingButton"
                                     Content="开始打字"
                                     Width="108"
@@ -505,7 +525,7 @@
             </StatusBarItem>
             <Separator/>
             <StatusBarItem HorizontalAlignment="Right">
-                <TextBlock x:Name="VersionText" Text="v8.0.0" Foreground="#28415E"/>
+                <TextBlock x:Name="VersionText" Text="v9.0.0" Foreground="#28415E"/>
             </StatusBarItem>
         </StatusBar>
 

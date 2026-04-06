@@ -184,12 +184,14 @@ namespace TypeSimulator
             int safeDoubleHitChance = Math.Max(0, Math.Min(30, _settings.DoubleHitChancePercent));
             int safeWholeWordRewriteChance = Math.Max(0, Math.Min(30, _settings.WholeWordRewriteChancePercent));
             int safeTypoExtraPauseChance = Math.Max(0, Math.Min(100, _settings.TypoExtraPauseChancePercent));
+            int safePunctuationDazeDelay = Math.Max(100, Math.Min(3000, _settings.PunctuationDazeDelayMs <= 0 ? 900 : _settings.PunctuationDazeDelayMs));
             int safePacingStrength = Math.Max(10, Math.Min(200, _settings.PacingCurveStrengthPercent));
             int safeFatigueStrength = Math.Max(10, Math.Min(200, _settings.FatigueCurveStrengthPercent));
             _settings.TypoChancePercent = safeTypoChance;
             _settings.DoubleHitChancePercent = safeDoubleHitChance;
             _settings.WholeWordRewriteChancePercent = safeWholeWordRewriteChance;
             _settings.TypoExtraPauseChancePercent = safeTypoExtraPauseChance;
+            _settings.PunctuationDazeDelayMs = safePunctuationDazeDelay;
             _settings.PacingCurveStrengthPercent = safePacingStrength;
             _settings.FatigueCurveStrengthPercent = safeFatigueStrength;
 
@@ -212,6 +214,11 @@ namespace TypeSimulator
             TypoExtraPauseChanceSlider.Value = safeTypoExtraPauseChance;
             TypoExtraPauseChanceSlider.IsEnabled = _settings.EnableTypoSimulation && _settings.EnableTypoExtraPause;
             TypoExtraPauseChanceValueText.Text = $"{safeTypoExtraPauseChance}%";
+
+            PunctuationDazePauseCheckBox.IsChecked = _settings.EnablePunctuationDazePause;
+            PunctuationDazeDelaySlider.Value = safePunctuationDazeDelay;
+            PunctuationDazeDelaySlider.IsEnabled = _settings.EnablePunctuationDazePause;
+            PunctuationDazeDelayValueText.Text = $"{safePunctuationDazeDelay} ms";
 
             PacingCurveCheckBox.IsChecked = _settings.EnablePacingCurve;
             PacingCurveStrengthSlider.Value = safePacingStrength;
@@ -525,6 +532,25 @@ namespace TypeSimulator
             }
         }
 
+        private void PunctuationDazePauseCheckBox_Changed(object sender, RoutedEventArgs e)
+        {
+            if (!_isInitialized) return;
+            _settings.EnablePunctuationDazePause = PunctuationDazePauseCheckBox.IsChecked == true;
+            PunctuationDazeDelaySlider.IsEnabled = _settings.EnablePunctuationDazePause;
+            QueueSettingsSave();
+        }
+
+        private void PunctuationDazeDelaySlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (PunctuationDazeDelayValueText != null)
+            {
+                int delayMs = Math.Max(100, Math.Min(3000, (int)e.NewValue));
+                PunctuationDazeDelayValueText.Text = $"{delayMs} ms";
+                _settings.PunctuationDazeDelayMs = delayMs;
+                QueueSettingsSave();
+            }
+        }
+
         private void PacingCurveCheckBox_Changed(object sender, RoutedEventArgs e)
         {
             if (!_isInitialized) return;
@@ -737,7 +763,9 @@ namespace TypeSimulator
                     _settings.EnablePacingCurve,
                     _settings.PacingCurveStrengthPercent,
                     _settings.EnableFatigueCurve,
-                    _settings.FatigueCurveStrengthPercent
+                    _settings.FatigueCurveStrengthPercent,
+                    _settings.EnablePunctuationDazePause,
+                    _settings.PunctuationDazeDelayMs
                 );
 
                 _typeSimulator.Start();
@@ -752,6 +780,7 @@ namespace TypeSimulator
                     $"开始模拟打字，速度：{_settings.TypingSpeed} CPM，随机延迟：{(_settings.EnableRandomDelay ? "开" : "关")}，" +
                     $"错字模拟：{(_settings.EnableTypoSimulation ? $"开(错字{_settings.TypoChancePercent}%/双击{_settings.DoubleHitChancePercent}%/整词{_settings.WholeWordRewriteChancePercent}%)" : "关")}，" +
                     $"错字后额外停顿：{(_settings.EnableTypoExtraPause ? $"开({_settings.TypoExtraPauseChancePercent}%)" : "关")}，" +
+                    $"标点发呆停顿：{(_settings.EnablePunctuationDazePause ? $"开(0~{_settings.PunctuationDazeDelayMs}ms)" : "关")}，" +
                     $"节奏曲线：{(_settings.EnablePacingCurve ? $"开(强度{_settings.PacingCurveStrengthPercent}%)" : "关")}，" +
                     $"疲劳曲线：{(_settings.EnableFatigueCurve ? $"开(强度{_settings.FatigueCurveStrengthPercent}%)" : "关")}，" +
                     $"共 {text.Length} 个字符");

@@ -19,6 +19,8 @@ namespace TypeSimulator.Models
         public int WholeWordRewriteChancePercent { get; set; }
         public bool EnableTypoExtraPause { get; set; }
         public int TypoExtraPauseChancePercent { get; set; }
+        public bool EnablePunctuationDazePause { get; set; }
+        public int PunctuationDazeDelayMs { get; set; }
         public bool EnablePacingCurve { get; set; }
         public int PacingCurveStrengthPercent { get; set; }
         public bool EnableFatigueCurve { get; set; }
@@ -41,6 +43,8 @@ namespace TypeSimulator.Models
             WholeWordRewriteChancePercent = 5;
             EnableTypoExtraPause = true;
             TypoExtraPauseChancePercent = 100;
+            EnablePunctuationDazePause = false;
+            PunctuationDazeDelayMs = 900;
             EnablePacingCurve = true;
             PacingCurveStrengthPercent = 100;
             EnableFatigueCurve = true;

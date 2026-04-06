@@ -20,6 +20,8 @@ namespace TypeSimulator.Models
         private int _wholeWordRewriteChancePercent;
         private bool _enableTypoExtraPause;
         private int _typoExtraPauseChancePercent;
+        private bool _enablePunctuationDazePause;
+        private int _punctuationDazeDelayMs;
         private bool _enablePacingCurve;
         private int _pacingCurveStrengthPercent;
         private bool _enableFatigueCurve;
@@ -44,6 +46,9 @@ namespace TypeSimulator.Models
         private const int MinTypoExtraPauseChancePercent = 0;
         private const int MaxTypoExtraPauseChancePercent = 100;
         private const int DefaultTypoExtraPauseChancePercent = 100;
+        private const int MinPunctuationDazeDelayMs = 100;
+        private const int MaxPunctuationDazeDelayMs = 3000;
+        private const int DefaultPunctuationDazeDelayMs = 900;
         private const int MinCurveStrengthPercent = 10;
         private const int MaxCurveStrengthPercent = 200;
         private const double NeighborDistanceThreshold = 1.5;
@@ -96,6 +101,8 @@ namespace TypeSimulator.Models
             _wholeWordRewriteChancePercent = WholeWordRewriteChancePercent;
             _enableTypoExtraPause = true;
             _typoExtraPauseChancePercent = DefaultTypoExtraPauseChancePercent;
+            _enablePunctuationDazePause = false;
+            _punctuationDazeDelayMs = DefaultPunctuationDazeDelayMs;
             _enablePacingCurve = true;
             _pacingCurveStrengthPercent = 100;
             _enableFatigueCurve = true;
@@ -110,7 +117,8 @@ namespace TypeSimulator.Models
             int doubleHitChancePercent = DoubleHitChancePercent, int wholeWordRewriteChancePercent = WholeWordRewriteChancePercent,
             bool enableTypoExtraPause = true, int typoExtraPauseChancePercent = DefaultTypoExtraPauseChancePercent,
             bool enablePacingCurve = true, int pacingCurveStrengthPercent = 100,
-            bool enableFatigueCurve = true, int fatigueCurveStrengthPercent = 100)
+            bool enableFatigueCurve = true, int fatigueCurveStrengthPercent = 100,
+            bool enablePunctuationDazePause = false, int punctuationDazeDelayMs = DefaultPunctuationDazeDelayMs)
         {
             if (text == null)
                 throw new ArgumentNullException(nameof(text));
@@ -129,6 +137,8 @@ namespace TypeSimulator.Models
                 _wholeWordRewriteChancePercent = Math.Max(MinWholeWordRewriteChancePercent, Math.Min(MaxWholeWordRewriteChancePercent, wholeWordRewriteChancePercent));
                 _enableTypoExtraPause = enableTypoExtraPause;
                 _typoExtraPauseChancePercent = Math.Max(MinTypoExtraPauseChancePercent, Math.Min(MaxTypoExtraPauseChancePercent, typoExtraPauseChancePercent));
+                _enablePunctuationDazePause = enablePunctuationDazePause;
+                _punctuationDazeDelayMs = Math.Max(MinPunctuationDazeDelayMs, Math.Min(MaxPunctuationDazeDelayMs, punctuationDazeDelayMs));
                 _enablePacingCurve = enablePacingCurve;
                 _pacingCurveStrengthPercent = Math.Max(MinCurveStrengthPercent, Math.Min(MaxCurveStrengthPercent, pacingCurveStrengthPercent));
                 _enableFatigueCurve = enableFatigueCurve;
@@ -525,6 +535,7 @@ namespace TypeSimulator.Models
             }
 
             nextDelay += CalculateContextPause(action);
+            nextDelay += CalculatePunctuationDazePause(action);
 
             _typingTimer.Interval = TimeSpan.FromMilliseconds(nextDelay);
         }
@@ -626,9 +637,29 @@ namespace TypeSimulator.Models
             return c == '.' || c == '!' || c == '?';
         }
 
+        private int CalculatePunctuationDazePause(TypingAction action)
+        {
+            if (!_enablePunctuationDazePause)
+                return 0;
+
+            if (action.Kind != TypingActionKind.TypeCharacter || !action.CommitCharacter)
+                return 0;
+
+            if (!IsDazePunctuation(action.Character))
+                return 0;
+
+            int maxPause = Math.Max(MinPunctuationDazeDelayMs, Math.Min(MaxPunctuationDazeDelayMs, _punctuationDazeDelayMs));
+            return _random.Next(0, maxPause + 1);
+        }
+
         private static bool IsChineseSentencePunctuation(char c)
         {
             return c == '。' || c == '！' || c == '？';
+        }
+
+        private static bool IsDazePunctuation(char c)
+        {
+            return c == '.' || c == ',' || c == '。' || c == '，';
         }
 
         private static bool IsWordBoundary(char c)
