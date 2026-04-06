@@ -1,0 +1,21 @@
+﻿# Build output
+**/bin/
+**/obj/
+
+# User/IDE files
+**/*.user
+**/*.suo
+.vs/
+
+# NuGet package cache in repo
+TypeSimulator/packages/
+
+# Archives and local artifacts
+*.zip
+*.7z
+*.rar
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
