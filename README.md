@@ -1,4 +1,4 @@
-﻿# TypeSimulator V9
+﻿# TypeSimulator-Pro
 
 基于 [YinChingZ/TypeSimulator](https://github.com/YinChingZ/TypeSimulator) 的增强版，目标是把“自动输入回放”做得更接近真人键入节奏，适合录屏演示、脚本回放、直播展示等场景。
 
